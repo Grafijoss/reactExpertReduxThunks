@@ -15,7 +15,8 @@
 ```javascript
 import { createStore, applyMiddleware } from 'redux'
 ```
-**Note: applyMiddleWare it is a function that cans recive all of  the moddlewares tha we want**
+> Note: applyMiddleWare it is a function that cans recive all of  the mIddlewares thaT we want
+
 8. we import thunk from redux-thunk
 ```javascript
 import thunk from 'redux-thunk'
@@ -60,7 +61,8 @@ export default payload =>
 		console.log(payload)
 }
 ```
-**Note: we can check the complete status of the application with getState() and dispatch() it will allow to dispatch more actions**
+
+> Note: we can check the complete status of the application with **getState()** AND **dispatch()** it will allow to dispatch more actions
 
 ## APP.JS
 
@@ -95,6 +97,75 @@ function reducer(state = initialState, action) {
 
 
 ___
-## Versionamiento del proyecto
+## 2. EFFECTS FROM THUNKS
 
-> Las credenciales las configura el usuario con rol de **MASTER**
+## THUNK.JS
+
+1. we set the constants and functions for start, succes and error
+
+```javascript
+const FETCH_START = 'start'
+const FETCH_SUCCES = 'succes'
+const FETCH_ERROR = 'error'
+
+// it is a function that only recives the type
+const fetchStart = () => ({
+	type: FETCH_START
+})
+
+// it recives a payload that it is all of data that the API return us
+const fetchSucces = payload => ({
+	type: FETCH_SUCCES,
+	payload,
+})
+
+// it recives a error that it is all of data that the API return us
+const fetchErro = error => ({
+	type: FETCH_ERROR,
+	error,
+})
+```
+
+2. we dispatch fetchStart() function
+
+```javascript
+export default payload =>
+	(dispatch, getState) => {
+		dispatch(fetchStart())
+	}
+```
+
+3. we use async await to resolve the fetch request
+> **async** alows us to write the same code that we use with promises but we do not need to write callBacks
+
+4. we put the **async** before the dispatch function to say it that it is an asynchronous function
+```javascript
+async (dispatch, getState)
+```
+5. Now we can use the reserved word **await** what it will do is assign the constant the value when the promise is resolved
+```javascript
+const url = 'https://jsonplaceholder.typicode.com/users'
+
+export default payload =>
+	async (dispatch, getState) => {
+		dispatch(fetchStart())
+		try {
+			const result = await fetch(url) // promise
+			const json = await result.json() // promise
+			dispatch(fetchSucces(json))
+		} catch (error) {
+			dispatch(fetchError(error))
+		}
+	}
+```
+
+## APP.JS
+
+1. we can capture the actions that are despatching from the reducer function
+```javascript
+function reducer(state = initialState, action) {
+	console.log(action)
+	return state
+}
+```
+2. now we can asign the answers to the reducers
