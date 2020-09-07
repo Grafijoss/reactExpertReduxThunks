@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
+import asyncMiddleware from './async-middleware'
 import { createStore, applyMiddleware } from 'redux'
 
 import './index.css';
@@ -21,7 +22,7 @@ import * as serviceWorker from './serviceWorker';
 // 	return state
 // }
 
-const store = createStore(reducer, applyMiddleware(thunk))
+const store = createStore(reducer, applyMiddleware(thunk, asyncMiddleware))
 
 ReactDOM.render(
 	<React.StrictMode>

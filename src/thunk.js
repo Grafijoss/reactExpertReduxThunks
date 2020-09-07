@@ -60,6 +60,7 @@ export default function reducer(state = initialState, action) {
 */
 
 // fetchAc
+/*
 export const myThunk = payload =>
 	async (dispatch, getState) => {
 		const url = 'https://jsonplaceholder.typicode.com/users'
@@ -72,3 +73,12 @@ export const myThunk = payload =>
 			dispatch(fetchAc.error(error))
 		}
 	}
+	*/
+
+export const myThunk = payload => ({
+	actions: fetchAc,
+	request: async () => {
+		const result = await fetch('https://jsonplaceholder.typicode.com/users')
+		return await result.json()
+	}
+})
