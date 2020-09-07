@@ -1,32 +1,4 @@
-const makeType = m => (a, isAsync) => {
-	if (isAsync) {
-		return {
-			START: `${a}/${a}-start`,
-			SUCCES: `${a}/${a}-succes`,
-			ERROR: `${a}/${a}-error`
-		}
-	}
-	return `${a}/${a}`
-}
-
-// makeActionCreator
-function mac(type, ...argNames) {
-	return function ac(...args) {
-		const action = { type }
-		argNames.forEach((arg, index) => {
-			action[argNames[index]] = args[index]
-		})
-		return action
-	}
-}
-
-function asyncMac(types) {
-	return {
-		start: mac(`${types.START}`,),
-		succes: mac(`${types.SUCCES}`, 'succes'),
-		error: mac(`${types.ERROR}`, 'error'),
-	}
-}
+import { makeType, asyncMac, createReducer } from './ducks-helper.js'
 
 const t = makeType('thunk')
 
@@ -49,6 +21,14 @@ const initialState = {
 	error: false
 }
 
+// it recives the initial-state and an object with the action handlers (switch cases)
+export default createReducer(initialState, {
+	[FETCH.START]: state => ({ ...state, fetching: true }),
+	[FETCH.SUCCES]: (state, { payload }) => ({ ...state, data: payload }),
+	[FETCH.ERROR]: (state, {error}) => ({...state, error})
+})
+
+/*
 export default function reducer(state = initialState, action) {
 	console.log(action)
 	switch (action.type) {
@@ -71,7 +51,7 @@ export default function reducer(state = initialState, action) {
 			return state
 	}
 }
-
+*/
 
 // fetchAc
 export const myThunk = payload =>
