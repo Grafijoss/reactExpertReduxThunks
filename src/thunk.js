@@ -20,18 +20,23 @@ function mac(type, ...argNames) {
 	}
 }
 
+function asyncMac(types) {
+	return {
+		start: mac(`${types.START}`,),
+		succes: mac(`${types.SUCCES}`, 'succes'),
+		error: mac(`${types.ERROR}`, 'error'),
+	}
+}
+
 const t = makeType('thunk')
 
 const FETCH = t('fetch', true)
 
-// it is a function that only recives the type
-const fetchStart = mac(FETCH.START)
+// const fetchStart = mac(FETCH.START)
+// const fetchSucces = mac(FETCH.SUCCES, 'payload')
+// const fetchError = mac(FETCH.ERROR, 'error')
 
-// it recives a payload that it is all of data that the API return us
-const fetchSucces = mac(FETCH.SUCCES, 'payload')
-
-// it recives a error that it is all of data that the API return us
-const fetchError = mac(FETCH.ERROR, 'error')
+const fetchAc = asyncMac(FETCH)
 
 const url = 'https://jsonplaceholder.typicode.com/users'
 
@@ -67,15 +72,17 @@ export default function reducer(state = initialState, action) {
 	}
 }
 
+
+// fetchAc
 export const myThunk = payload =>
 	async (dispatch, getState) => {
 		console.log(payload)
-		dispatch(fetchStart())
+		dispatch(fetchAc.start())
 		try {
 			const result = await fetch(url) // promise
 			const json = await result.json() // promise
-			dispatch(fetchSucces(json))
+			dispatch(fetchAc.succes(json))
 		} catch (error) {
-			dispatch(fetchError(error))
+			dispatch(fetchAc.error(error))
 		}
 	}
