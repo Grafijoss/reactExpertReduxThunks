@@ -1,4 +1,5 @@
 import { makeType, asyncMac, createReducer } from './ducks-helper.js'
+import { fetchReducer } from './hors'
 
 const t = makeType('thunk')
 
@@ -10,7 +11,6 @@ const FETCH = t('fetch', true)
 
 const fetchAc = asyncMac(FETCH)
 
-const url = 'https://jsonplaceholder.typicode.com/users'
 
 const initialState = {
 	data: {
@@ -21,12 +21,18 @@ const initialState = {
 	error: false
 }
 
+
+
 // it recives the initial-state and an object with the action handlers (switch cases)
+/*
 export default createReducer(initialState, {
 	[FETCH.START]: state => ({ ...state, fetching: true }),
 	[FETCH.SUCCES]: (state, { payload }) => ({ ...state, data: payload }),
 	[FETCH.ERROR]: (state, {error}) => ({...state, error})
 })
+*/
+
+export default createReducer(initialState, fetchReducer(FETCH))
 
 /*
 export default function reducer(state = initialState, action) {
@@ -56,7 +62,7 @@ export default function reducer(state = initialState, action) {
 // fetchAc
 export const myThunk = payload =>
 	async (dispatch, getState) => {
-		console.log(payload)
+		const url = 'https://jsonplaceholder.typicode.com/users'
 		dispatch(fetchAc.start())
 		try {
 			const result = await fetch(url) // promise
